@@ -1,0 +1,36 @@
+name: Main
+on: [push, pull_request]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Run terraform-cloud action
+        uses: ./
+        id: terraform-cloud
+        with:
+          terraform-cloud-api-token: ${{ secrets.TERRAFORM_TOKEN }}
+          path: /organizations
+          jq: |
+            .data[0].type
+
+      - name: Verify outputs
+        run: |
+          [ "${{ fromJSON(steps.terraform-cloud.outputs.json) }}" = "organizations" ]
+
+  shellcheck:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Install shellcheck
+        run: sudo apt-get update -y && sudo apt-get install shellcheck
+
+      - name: Run shellcheck
+        run: shellcheck entrypoint.sh

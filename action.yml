@@ -1,0 +1,33 @@
+name: "Terraform Cloud"
+description: "Interact with the Terraform Cloud API from GitHub Actions"
+inputs:
+  terraform-cloud-api-token:
+    description: "User, team, or organization API token to Terraform Cloud"
+    required: true
+  method:
+    description: "HTTP method to use in the request"
+    required: true
+    default: "GET"
+  path:
+    description: "Terraform API path to request (leading slash required)"
+    required: true
+  body:
+    description: "Request body (doesn't apply to all HTTP methods)"
+    required: false
+  jq:
+    description: "`jq` program to run against the API response"
+    required: true
+    default: "."
+outputs:
+  json:
+    description: "JSON output from running `jq` against the Terraform API response"
+runs:
+  using: "docker"
+  image: "Dockerfile"
+  args:
+    - ${{ inputs.method }}
+    - ${{ inputs.path }}
+    - ${{ inputs.body }}
+    - ${{ inputs.jq }}
+  env:
+    TERRAFORM_TOKEN: ${{ inputs.terraform-cloud-api-token }}
