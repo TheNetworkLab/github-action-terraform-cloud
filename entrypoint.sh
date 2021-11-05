@@ -18,3 +18,6 @@ curl --fail-with-body \
     > response.json
 
 echo "::set-output name=json::$(jq --compact-output "$jq_program" response.json)"
+
+# Duplicate the result, but prettified, to the console log
+jq "$jq_program" response.json
