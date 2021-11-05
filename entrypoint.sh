@@ -9,7 +9,7 @@ jq_program="$4"
 
 echo "::add-mask::$TERRAFORM_TOKEN" 
 
-curl \
+curl --fail-with-body \
     --header "Authorization: Bearer $TERRAFORM_TOKEN" \
     --header "Content-Type: application/vnd.api+json" \
     --data-raw "$body" \
